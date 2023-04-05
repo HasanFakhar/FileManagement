@@ -1,10 +1,13 @@
+import math
+
 class FileObject:
-    def _init_(self, file_manager, file_name, mode):
+    def __init__(self, file_manager, file_name, mode):
         self.file_manager = file_manager
         self.file_name = file_name
         self.mode = mode
         self.file_data = file_manager.files[file_name]['data']
         self.file_size = file_manager.files[file_name]['size']
+        self.blocks=file_manager.files[file_name]['blocks']
 
     def _write_data(self, data, pos=None):
         if self.mode == 'r':
@@ -14,6 +17,9 @@ class FileObject:
             pos = self.file_size
         self.file_data = self.file_data[:pos] + data + self.file_data[pos:]
         self.file_size += len(data)
+        length= math.ceil(self.file_size / self.file_manager.block_size)
+        self.blocks=self.file_manager._allocate_blocks(length)
+
 
     def write(self, data):
         self._write_data(data)
@@ -44,3 +50,4 @@ class FileObject:
     def close(self):
         self.file_manager.files[self.file_name]['data'] = self.file_data
         self.file_manager.files[self.file_name]['size'] = self.file_size
+        self.file_manager.files[self.file_name]['blocks'] = self.blocks

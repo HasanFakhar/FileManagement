@@ -1,10 +1,12 @@
 from File import FileObject
 
 class FileManager:
-    def _init_(self):
+    def __init__(self):
         self.current_dir = '/'
         self.files = {}
-        self.memory_map = []
+        self.memory_map = [0 for i in range(10)]
+        self.block_size=512
+
 
     def create(self, file_name):
         if file_name in self.files:
@@ -13,7 +15,6 @@ class FileManager:
         self.files[file_name] = {
             'data': '',
             'size': 0,
-            'start': None,
             'blocks': []
         }
         print(f'{file_name} created')
@@ -66,6 +67,11 @@ class FileManager:
 
     def show_memory_map(self):
         print(self.memory_map)
+        for file in self.files:
+            try:
+                print(f'{file}: {self.files[file]["blocks"]}    {self.files[file]["size"]}')
+            except KeyError:
+                continue
 
     def _find_free_blocks(self, size):
         free_blocks = []
@@ -91,5 +97,7 @@ class FileManager:
     def _free_blocks(self, blocks):
         for block in blocks:
             self.memory_map[block] = 0
+
+
 
 
