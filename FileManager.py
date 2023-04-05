@@ -3,7 +3,7 @@ from File import FileObject
 class FileManager:
     def __init__(self):
         self.current_dir = '/'
-        self.files = {}
+        self.files = {'/': {'type': 'dir', 'contents': []}}
         self.memory_map = [0 for i in range(10)]
         self.block_size=512
 
@@ -17,6 +17,7 @@ class FileManager:
             'size': 0,
             'blocks': []
         }
+        self.files[self.current_dir]['contents'].append(file_name)
         print(f'{file_name} created')
 
     def delete(self, file_name):
@@ -34,7 +35,7 @@ class FileManager:
             return
         self.files[dir_name] = {
             'type': 'dir',
-            'contents': {}
+            'contents': []
         }
         print(f'{dir_name} created')
 
@@ -57,8 +58,8 @@ class FileManager:
         print(f'{source_file} moved to {target_file}')
 
     def open(self, file_name, mode):
-        if file_name not in self.files:
-            print(f'{file_name} does not exist')
+        if file_name not in self.files[self.current_dir]['contents']:
+            print(f'{file_name} does not exist in {self.current_dir}')
             return None
         if mode not in ['r', 'w', 'a']:
             print(f'{mode} is not a valid mode')

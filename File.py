@@ -18,6 +18,7 @@ class FileObject:
         self.file_data = self.file_data[:pos] + data + self.file_data[pos:]
         self.file_size += len(data)
         length= math.ceil(self.file_size / self.file_manager.block_size)
+        self.file_manager._free_blocks(self.blocks)
         self.blocks=self.file_manager._allocate_blocks(length)
 
 
